@@ -1,5 +1,9 @@
 <template>
   <view>
+    <!-- //这是搜索组件 -->
+    <view class="search-box">
+      <my-search @click="goToSearch"></my-search>
+    </view>
     <swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" :circular="true">
       <swiper-item v-for="(item, i) in swiperList" :key="i">
         <navigator class="swiper-item" :url="'/subpkg/goods_detail/goods_detail?goods_id=' + item.goods_id">
@@ -117,6 +121,11 @@
         // 3.3 请求成功，为 data 中的数据赋值
         this.floorList = res.message
       
+      },
+      goToSearch(){
+        uni.navigateTo({
+          url: '/subpkg/search/search'
+        })
       }
     },
   }
@@ -154,5 +163,10 @@
   .floor-img-box{
     display: flex;
     padding-left: 10rpx;
+  }
+  .search-box{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
   }
 </style>
