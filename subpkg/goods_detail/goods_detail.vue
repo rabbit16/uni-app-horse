@@ -21,7 +21,7 @@
       </view>
       <!-- 运费 -->
       <view class="yf">
-        快递: 免运费
+        快递: 免运费 -- {{cart.length}}
       </view>
       <rich-text :nodes="goods_info.goods_introduce"></rich-text>
       <!-- 商品导航区 -->
@@ -35,7 +35,28 @@
 </template>
 
 <script>
+  import {
+    mapState,
+    mapMutations,
+    mapGetters
+  } from 'vuex'
   export default {
+    computed: {
+      ...mapState('m_cart', ['cart']),
+      ...mapGetters('m_cart', ['total'])
+    },
+    watch: {
+      total: {
+        handler(newVal) {
+          console.log(newVal)
+          const findResult = this.options.find(x => x.text === '购物车')
+          if (findResult) {
+            findResult.info = newVal
+          }
+        },
+        immediate: true
+      }
+    },
     data() {
       return {
         goods_info: [],
@@ -47,7 +68,7 @@
         }, {
           icon: 'cart',
           text: '购物车',
-          info: 2
+          info: 0
         }],
         buttonGroup: [{
             text: '加入购物车',
@@ -68,6 +89,7 @@
       this.getGoodsDetail(goods_id)
     },
     methods: {
+      ...mapMutations('m_cart', ['addToCart']),
       async getGoodsDetail(goods_id) {
         const {
           data: res
@@ -87,15 +109,31 @@
           urls: this.goods_info.pics.map(x => x.pics_big)
         })
       },
-      onClick(e){
+      onClick(e) {
         console.log(e)
-        if(e.content.text === "购物车"){
+        if (e.content.text === "购物车") {
           uni.switchTab({
             url: '/pages/cart/cart'
           })
         }
-      }
-    }
+      },
+      buttonClick(e) {
+        console.log(e)
+        if (e.content.text === "加入购物车") {
+          const goods = {
+            goods_id: this.goods_info.goods_id,
+            goods_name: this.goods_info.goods_name,
+            goods_price: this.goods_info.goods_price,
+            goods_count: 1,
+            goods_small_logo: this.goods_info.goods_small_logo,
+            goods_state: true
+          }
+          this.addToCart(goods)
+        }
+
+      },
+
+    },
   }
 </script>
 
@@ -111,6 +149,7 @@
 
   .goods-detail-container {
     padding-bottom: 50px;
+
     .goods-info-box {
       padding: 10px;
       padding-right: 0;
