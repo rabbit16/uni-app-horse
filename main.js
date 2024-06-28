@@ -1,7 +1,7 @@
 //导入网络请求的包
 
 
-
+import store from '@/store/store.js'
 // #ifndef VUE3
 import Vue from 'vue'
 import App from './App'
@@ -15,7 +15,7 @@ Vue.config.productionTip = false
 App.mpType = 'app'
 
 const app = new Vue({
-    ...App
+    ...App,
 })
 app.$mount()
 // #endif
@@ -25,6 +25,7 @@ import { createSSRApp } from 'vue'
 import App from './App.vue'
 export function createApp() {
   const app = createSSRApp(App)
+  app.use(store);  // 加载全局数据模块
   return {
     app
   }
