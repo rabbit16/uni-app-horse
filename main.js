@@ -37,9 +37,19 @@ import {$http} from '@escook/request-miniprogram'
 uni.$http = $http
 $http.baseUrl = "https://api-hmugo-web.itheima.net"  // 定义基础的路由
 $http.beforeRequest = function(options){
+  console.log(options.url.indexOf('/my/'))
+  if(options.url.indexOf('/my/') !== -1){
+    console.log("进来了")
+    options.header = {
+      Authorization: store.state.m_user.token
+    }
+    console.log(options)
+  }
+  
   uni.showLoading({
     title:"数据加载中"
   })
+  
 }
 
 $http.afterRequest = function(options){
